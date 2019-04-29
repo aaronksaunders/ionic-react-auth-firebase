@@ -18,6 +18,20 @@ Still working on
 - Firebase Create Account
 - IonList
 
+### Configure Firebase
+
+```javascript
+// firebaseService.js - set your own firebase project information
+var firebaseConfig = {
+  apiKey: "xxxxxxxxxxxxxxxxx",
+  authDomain: "xxxxxxxxxxxx.firebaseapp.com",
+  databaseURL: "https://xxxxxxxxxxxx.firebaseio.com",
+  projectId: "xxxxxxxxxxxx",
+  storageBucket: "xxxxxxxxxxxx.appspot.com",
+  messagingSenderId: "xxxxxxxxxxxx"
+};
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
