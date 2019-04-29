@@ -1,3 +1,13 @@
+
+
+Responding to suggestion from 
+- IonTabs
+- IonDatePicker
+- IonModal
+- IonToast
+- Firebase Authentication
+- Mobx State Management
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
