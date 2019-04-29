@@ -8,8 +8,17 @@ export class Store {
   loading;
 
   constructor() {
-    this.activeUser = null
+    this.activeUser = null;
     this.loading = false;
+    this.authCheckComplete = false;
+
+    firebaseService.authCheck().then((_user)=>{
+      return runInAction(() => {
+        this.activeUser = _user;
+        this.authCheckComplete = true;
+        return this.activeUser;
+      });
+    })
   }
 
   get doCheckAuth() {
@@ -97,6 +106,7 @@ decorate(Store, {
   // OBSERVABLES
   activeUser: observable,
   loading: observable,
+  authCheckComplete : observable,
 
   // COMPUTED
   authenticatedUser: computed,
