@@ -1,12 +1,22 @@
+## React Project using Ionic v4 Components
 
+Responding to suggestion from Max Lynch...
+> "If someone wrote a tutorial on using Ionic React with Firebase that would be pretty cool (hint hint)"
 
-Responding to suggestion from 
+So I pulled together some of the code I was already playing with, will post more as I work on additional features
+
 - IonTabs
+  - Tabs Detail Page
 - IonDatePicker
 - IonModal
 - IonToast
 - Firebase Authentication
 - Mobx State Management
+
+Still working on 
+- Firebase CRUD
+- Firebase Create Account
+- IonList
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
