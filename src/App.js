@@ -6,7 +6,7 @@ import {
   Redirect
 } from "react-router-dom";
 
-import { IonApp, IonRouterOutlet, IonLabel } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonLabel, IonSpinner } from "@ionic/react";
 
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
@@ -14,22 +14,29 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import TabOneDetailPage from "./pages/TabOneDetailPage";
 
-
 import { inject, observer } from "mobx-react";
 class App extends Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
     return !this.props.store.authCheckComplete ? (
-      <IonLabel>"loading..."</IonLabel>
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)"
+        }}
+      >
+        <IonSpinner name="circles" />
+      </div>
     ) : (
       <Router>
         <IonApp>
           <Switch>
-          <PrivateRoute
+            <PrivateRoute
               exact
               path="/"
               render={() => <Redirect to="/home" />}

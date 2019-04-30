@@ -1,8 +1,13 @@
 import React, { Component } from "react";
-import { IonItem, IonContent } from "@ionic/react";
+import {
+  IonItem,
+  IonContent,
+  IonButton,
+  IonLabel,
+  IonText
+} from "@ionic/react";
 // MOBX
 import { inject } from "mobx-react";
-
 
 class TabTwoPage extends Component {
   constructor(props) {
@@ -11,11 +16,30 @@ class TabTwoPage extends Component {
   }
 
   render() {
+    let user = this.props.store.activeUser;
     return (
       <IonContent padding>
+
         <IonItem>
-          <h1>Tab Two Page</h1>
+          <IonLabel position="fixed">Email</IonLabel>
+          <IonLabel>{user.email}</IonLabel>
         </IonItem>
+
+        <IonItem text-wrap>
+          <IonLabel position="fixed">First Name</IonLabel>
+          {user.firstName}
+        </IonItem>
+
+        <IonItem text-wrap>
+          <IonLabel position="fixed">Last Name</IonLabel>
+          {user.lastName}
+        </IonItem>
+
+        <IonItem text-wrap lines="none" style={{ padding: 10 }}>
+          {user.bio}
+        </IonItem>
+
+        <IonButton expand="full">LOGOUT</IonButton>
       </IonContent>
     );
   }

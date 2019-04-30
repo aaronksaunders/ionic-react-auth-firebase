@@ -15,13 +15,30 @@ export class Store {
     this.authCheckComplete = false;
     this.items = new Map();
 
-    firebaseService.authCheck().then(_user => {
-      return runInAction(() => {
-        this.activeUser = _user;
-        this.authCheckComplete = true;
-        return this.activeUser;
-      });
+    this.initializeStore().then(u => {
+      this.activeUser = u;
+      this.authCheckComplete = true;
     });
+  }
+
+  async initializeStore() {
+    return firebaseService
+      .authCheck()
+      .then(_user => {
+        return runInAction(async () => {
+          this.activeUser = _user;
+
+          if (_user) {
+            let userAcctInfo = await firebaseService.getUserProfile();
+            return { ...this.activeUser, ...userAcctInfo };
+          } else {
+            return _user;
+          }
+        });
+      })
+      .catch(e => {
+        debugger;
+      });
   }
 
   get doCheckAuth() {
@@ -37,11 +54,11 @@ export class Store {
   }
 
   get itemEntries() {
-    return entries(this.items)
+    return entries(this.items);
   }
 
   itemByKey(_key) {
-    return get(this.items,_key)
+    return get(this.items, _key);
   }
 
   /**
@@ -56,9 +73,15 @@ export class Store {
         .then(
           _result => {
             // create the user object based on the data retrieved...
-            return runInAction(() => {
-              this.activeUser = _result.user;
-              return this.activeUser;
+            return runInAction(async () => {
+              if (_result.user) {
+                let userAcctInfo = await firebaseService.getUserProfile();
+                this.activeUser = { ..._result.user, ...userAcctInfo }
+                return this.activeUser;
+              } else {
+                this.activeUser = null;
+                return this.activeUser;
+              }
             });
           },
           err => {
@@ -167,7 +190,7 @@ decorate(Store, {
   // COMPUTED
   authenticatedUser: computed,
   doCheckAuth: computed,
-  itemEntries : computed,
+  itemEntries: computed,
 
   // ACTIONS
   doCreateUser: action,

@@ -55,10 +55,10 @@ class TabOnePage extends Component {
     this.setState(() => ({ showModal: true }));
   };
   render() {
-    let { store, history } = this.props;
+    let { store, history } = this.props; 
 
     if (!store.activeUser) return null;
-    
+
     return (
       <>
         <AddItemModal
@@ -80,18 +80,6 @@ class TabOnePage extends Component {
           </IonItem>
           <IonButton expand="full" onClick={e => this._addItem()}>
             Add Item
-          </IonButton>
-          <IonButton
-            expand="full"
-            onClick={e => {
-              if (!e.currentTarget) {
-                return;
-              }
-              e.preventDefault();
-              history.push("/tab1-detail/10");
-            }}
-          >
-            Next Page
           </IonButton>
           <IonList>{this._renderItems()}</IonList>
         </IonContent>{" "}
