@@ -56,6 +56,9 @@ class TabOnePage extends Component {
   };
   render() {
     let { store, history } = this.props;
+
+    if (!store.activeUser) return null;
+    
     return (
       <>
         <AddItemModal
