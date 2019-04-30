@@ -36,7 +36,6 @@ class HomePage extends Component {
   _onLogoutClick = async e => {
     e.preventDefault();
     let r = await this.props.store.doLogout();
-    debugger;
     this.props.history.push("/login");
   };
 

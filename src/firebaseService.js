@@ -10,9 +10,9 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-  // const firestore = firebase.firestore();
-  // const settings = { timestampsInSnapshots: true };
-  // firestore.settings(settings);
+// const firestore = firebase.firestore();
+// const settings = { timestampsInSnapshots: true };
+// firestore.settings(settings);
 
 /**
  *
@@ -127,7 +127,6 @@ export const queryObjectCollection = ({ collection }) => {
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
           results.push({
             id: doc.id,
             ...doc.data()
@@ -151,7 +150,6 @@ export const addObjectToCollection = ({ collection, objectData }) => {
   let currentUserId = firebase.auth().currentUser.uid;
   let collectionRef = firebase.firestore().collection(collection);
 
-  debugger;
   return collectionRef
     .add({
       owner: currentUserId,
@@ -160,15 +158,39 @@ export const addObjectToCollection = ({ collection, objectData }) => {
       updated: new Date().getTime()
     })
     .then(
-      doc => {
+      async doc => {
         console.log(`addObjectToCollection ${collection} ${doc}`);
-        return doc;
+
+        let docData = await getByRef(doc);
+        return docData;
       },
       error => {
         console.log(`ERROR: addObjectToCollection ${collection} ${error}`);
         return error;
       }
-    );
+    )
+    .catch(e => {
+      console.log(`ERROR: addObjectToCollection ${collection} ${e}`);
+      return e;
+    });
+};
+
+export const getByRef = _documentRef => {
+  return _documentRef
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        return {...doc.data(), id: _documentRef.id};
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+        return null;
+      }
+    })
+    .catch(error => {
+      console.log("Error getting document:", error);
+      return error;
+    });
 };
 
 /**

@@ -5,21 +5,51 @@ import {
   IonHeader,
   IonToolbar,
   IonButtons,
+  IonText,
   IonList,
   IonLabel,
   IonButton
 } from "@ionic/react";
 // MOBX
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import AddItemModal from "./AddItemModal";
 
 class TabOnePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        showModal : false
+      showModal: false
     };
+
+    this.props.store.loadData();
   }
+
+  _renderItems = () => {
+    return this.props.store.itemEntries.map(([key, value]) => {
+      return (
+        <IonItem
+          key={key}
+          onClick={e => {
+            if (!e.currentTarget) {
+              return;
+            }
+            e.preventDefault();
+            this.props.history.push("/tab1-detail/" + key);
+          }}
+        >
+          <IonLabel text-wrap>
+            <IonText color="primary">
+              <h3>{value.content.subject}</h3>
+            </IonText>
+            <p>{value.content.body}</p>
+            <IonText color="secondary">
+              <p>{value.content.dueDate}</p>
+            </IonText>
+          </IonLabel>
+        </IonItem>
+      );
+    });
+  };
 
   _addItem = () => {
     this.setState(() => ({ showModal: true }));
@@ -30,10 +60,11 @@ class TabOnePage extends Component {
       <>
         <AddItemModal
           showModal={this.state.showModal}
-          onDidDismiss={(_v) => {
-              if (_v) {
-                  console.log(_v.ret)
-              }
+          onDidDismiss={_v => {
+            if (_v) {
+              console.log(_v.result);
+              store.addItem({ ..._v.result });
+            }
             this.setState(() => ({ showModal: false }));
           }}
         />
@@ -59,10 +90,11 @@ class TabOnePage extends Component {
           >
             Next Page
           </IonButton>
+          <IonList>{this._renderItems()}</IonList>
         </IonContent>{" "}
       </>
     );
   }
 }
 
-export default inject("store")(TabOnePage);
+export default inject("store")(observer(TabOnePage));

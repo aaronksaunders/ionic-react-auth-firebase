@@ -66,13 +66,12 @@ class AddItemModal extends Component {
                   <IonButton
                     expand="full"
                     onClick={() => {
-                      debugger;
-                      let ret = {
+                      let returnValues = {
                         dueDate: this.dueDate.current.value,
                         body: this.body.current.value,
                         subject: this.subject.current.value
                       };
-                      this.props.onDidDismiss({ ret });
+                      this.props.onDidDismiss({ result: returnValues });
                       this.dueDate.current.value = null;
                       this.body.current.value = null;
                       this.subject.current.value = null;

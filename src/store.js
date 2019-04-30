@@ -1,4 +1,5 @@
 import { observable, computed, action, decorate, runInAction } from "mobx";
+import { get, set, entries } from "mobx";
 import * as firebaseService from "./firebaseService";
 
 export class Store {
@@ -6,26 +7,26 @@ export class Store {
   // to changes of this object to determine of we are logged in or not
   activeUser;
   loading;
+  items;
 
   constructor() {
     this.activeUser = null;
     this.loading = false;
     this.authCheckComplete = false;
+    this.items = new Map();
 
-    firebaseService.authCheck().then((_user)=>{
+    firebaseService.authCheck().then(_user => {
       return runInAction(() => {
         this.activeUser = _user;
         this.authCheckComplete = true;
         return this.activeUser;
       });
-    })
+    });
   }
 
   get doCheckAuth() {
     if (firebaseService.getCurrentUser()) {
-      this.activeUser = Object.assign({}, this.user.details, {
-        id: this.user.id
-      });
+      return this.activeUser;
     }
   }
   /**
@@ -33,6 +34,14 @@ export class Store {
    */
   get authenticatedUser() {
     return this.activeUser || null;
+  }
+
+  get itemEntries() {
+    return entries(this.items)
+  }
+
+  itemByKey(_key) {
+    return get(this.items,_key)
   }
 
   /**
@@ -46,7 +55,6 @@ export class Store {
         .loginWithEmail(_username, _password)
         .then(
           _result => {
-            debugger;
             // create the user object based on the data retrieved...
             return runInAction(() => {
               this.activeUser = _result.user;
@@ -98,7 +106,54 @@ export class Store {
   doLogout() {
     this.activeUser = null;
     return firebaseService.logOut();
+  }
 
+  // DATA CRUD
+  loadData() {
+    return firebaseService
+      .queryObjectCollection({ collection: "items" })
+      .then(
+        _result => {
+          // create the user object based on the data retrieved...
+          return runInAction(() => {
+            let resultMap = _result.reduce((map, obj) => {
+              map[obj.id] = obj;
+              return map;
+            }, {});
+            this.items = resultMap;
+            return resultMap;
+          });
+        },
+        err => {
+          console.log(err);
+          return err;
+        }
+      )
+      .catch(e => {
+        console.log(e);
+        return e;
+      });
+  }
+  addItem(_data) {
+    return firebaseService
+      .addObjectToCollection({ collection: "items", objectData: _data })
+      .then(
+        _result => {
+          // create the user object based on the data retrieved...
+          return runInAction(() => {
+            set(this.items, _result.id, _result);
+            return _result;
+          });
+        },
+        err => {
+          console.log(err);
+          return err;
+        }
+      )
+      .catch(e => {
+        console.log(e);
+        return e;
+      });
   }
 }
 
@@ -106,15 +161,18 @@ decorate(Store, {
   // OBSERVABLES
   activeUser: observable,
   loading: observable,
-  authCheckComplete : observable,
+  authCheckComplete: observable,
+  items: observable,
 
   // COMPUTED
   authenticatedUser: computed,
   doCheckAuth: computed,
+  itemEntries : computed,
 
   // ACTIONS
   doCreateUser: action,
   doLogin: action,
   doLogout: action,
-  clearCart: action
+  loadData: action,
+  itemByKey: action
 });
