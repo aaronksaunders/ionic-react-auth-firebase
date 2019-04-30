@@ -32,6 +32,19 @@ var firebaseConfig = {
 };
 ```
 
+## Screenshots
+<div>
+ <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.32.49%20PM.png" height="600" style="padding:10px">
+
+ <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.30.39%20PM.png" height="600" style="padding:10px">
+ </div>
+
+<div>
+ <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.30.54%20PM.png" height="600" style="padding:10px">
+  
+ <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.31.09%20PM.png" height="600" style="padding:10px">
+ </div>
+  
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
