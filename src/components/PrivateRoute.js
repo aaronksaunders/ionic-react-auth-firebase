@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { inject, observer } from "mobx-react";
-const PrivateRoute = ({ store : store, component: Component, ...rest }) => {
+import { inject } from "mobx-react";
+const PrivateRoute = ({ store, component: Component, ...rest }) => {
   console.log(store.authenticatedUser)
   return (
     <Route

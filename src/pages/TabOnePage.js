@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import {
   IonItem,
   IonContent,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
   IonText,
   IonList,
   IonLabel,
@@ -55,7 +52,7 @@ class TabOnePage extends Component {
     this.setState(() => ({ showModal: true }));
   };
   render() {
-    let { store, history } = this.props; 
+    let { store } = this.props; 
 
     if (!store.activeUser) return null;
 

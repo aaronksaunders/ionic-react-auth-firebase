@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@firebase/app-types": "^0.3.10",
+    "@firebase/util": "^0.2.14",
     "@ionic/react": "^0.0.5",
-    "firebase": "^5.10.1",
+    "firebase": "^5.11.0",
     "mobx": "^5.9.4",
     "mobx-react": "^5.4.3",
     "react": "^16.8.6",

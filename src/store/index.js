@@ -3,17 +3,12 @@ import { get, set, entries } from "mobx";
 import * as firebaseService from "./firebaseService";
 
 export class Store {
-  // this will hold the user object when we have one, we can subscribe
-  // to changes of this object to determine of we are logged in or not
-  activeUser;
-  loading;
-  items;
-
   constructor() {
     this.activeUser = null;
     this.loading = false;
     this.authCheckComplete = false;
     this.items = new Map();
+    this.initializationError = null;
 
     this.initializeStore().then(u => {
       this.activeUser = u;
@@ -21,29 +16,44 @@ export class Store {
     });
   }
 
+  /**
+   * if we have an authenticated user then get all of the profile
+   * information from the database and associate it with the active
+   * user
+   * @param {*} _authUser
+   */
+  handleAuthedUser = async _authUser => {
+    if (_authUser) {
+      let userAcctInfo = await firebaseService.getUserProfile();
+      console.log("setting active user");
+      this.activeUser = { ..._authUser, ...userAcctInfo };
+    } else {
+      this.activeUser = _authUser;
+    }
+    return this.activeUser;
+  };
+
+  /**
+   * check to see if we have a user before starting up
+   */
   async initializeStore() {
     return firebaseService
-      .authCheck()
+      .authCheck(this.handleAuthedUser)
       .then(_user => {
-        return runInAction(async () => {
-          this.activeUser = _user;
-
-          if (_user) {
-            let userAcctInfo = await firebaseService.getUserProfile();
-            return { ...this.activeUser, ...userAcctInfo };
-          } else {
-            return _user;
-          }
-        });
+        return _user;
       })
       .catch(e => {
-        debugger;
+        return runInAction(() => {
+          this.initializationError = e;
+        });
       });
   }
 
   get doCheckAuth() {
     if (firebaseService.getCurrentUser()) {
       return this.activeUser;
+    } else {
+      return null;
     }
   }
   /**
@@ -53,10 +63,17 @@ export class Store {
     return this.activeUser || null;
   }
 
+  /**
+   * gets all of the items as an array from the map
+   */
   get itemEntries() {
     return entries(this.items);
   }
 
+  /**
+   * get a specific item based on its key
+   * @param {*} _key
+   */
   itemByKey(_key) {
     return get(this.items, _key);
   }
@@ -65,24 +82,13 @@ export class Store {
    * login using a username and password
    */
   doLogin(_username, _password) {
+    debugger;
     if (_username.length) {
-      let details = { email: _username, password: _password };
-
       return firebaseService
         .loginWithEmail(_username, _password)
         .then(
           _result => {
-            // create the user object based on the data retrieved...
-            return runInAction(async () => {
-              if (_result.user) {
-                let userAcctInfo = await firebaseService.getUserProfile();
-                this.activeUser = { ..._result.user, ...userAcctInfo }
-                return this.activeUser;
-              } else {
-                this.activeUser = null;
-                return this.activeUser;
-              }
-            });
+            return true
           },
           err => {
             console.log(err);
@@ -99,28 +105,27 @@ export class Store {
   /**
    * create the user with the information and set the user object
    */
-  doCreateUser(_params) {
-    firebaseService
-      .registerUser({
+  async doCreateUser(_params) {
+    try {
+      let newUser = await firebaseService.registerUser({
         email: _params.email,
         password: _params.password,
-        username: _params.username
-      })
-      .then(
-        () => {
-          return this.doLogin(_params.email, _params.password);
-        },
-        err => {
-          console.log(err);
-          for (let e of err.details) {
-            if (e === "conflict_email") {
-              alert("Email already exists.");
-            } else {
-              // handle other errors
-            }
-          }
-        }
-      );
+        firstName: _params.firstName,
+        lastName: _params.lastName
+      });
+      return newUser;
+    } catch (err) {
+      debugger;
+      console.log(err);
+      return err;
+      // for (let e of err.details) {
+      //   if (e === "conflict_email") {
+      //     alert("Email already exists.");
+      //   } else {
+      //     // handle other errors
+      //   }
+      // }
+    }
   }
 
   /**
@@ -186,6 +191,7 @@ decorate(Store, {
   loading: observable,
   authCheckComplete: observable,
   items: observable,
+  initializationError: observable,
 
   // COMPUTED
   authenticatedUser: computed,

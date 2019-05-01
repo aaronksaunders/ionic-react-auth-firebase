@@ -1,12 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
-import {
-  IonTabs,
-  IonTabBar,
-  IonTabButton,
-  IonLabel,
-  IonRouterOutlet
-} from "@ionic/react";
+
 import TabOnePage from "../pages/TabOnePage";
 import TabTwoPage from "../pages/TabTwoPage";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { IonItem, IonLabel, IonButton, IonText } from "@ionic/react";
+import { IonItem, IonLabel, IonText } from "@ionic/react";
 import BasicPage from "../components/BasicPage";
 import { inject } from "mobx-react";
 /**

@@ -6,7 +6,7 @@ import {
   Redirect
 } from "react-router-dom";
 
-import { IonApp, IonRouterOutlet, IonLabel, IonSpinner } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonSpinner } from "@ionic/react";
 
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
@@ -16,10 +16,6 @@ import TabOneDetailPage from "./pages/TabOneDetailPage";
 
 import { inject, observer } from "mobx-react";
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return !this.props.store.authCheckComplete ? (
       <div
@@ -36,15 +32,11 @@ class App extends Component {
       <Router>
         <IonApp>
           <Switch>
-            <PrivateRoute
-              exact
-              path="/"
-              render={() => <Redirect to="/home" />}
-            />
+            <Redirect exact from="/" to="home" />
             <Route path="/login" component={LoginPage} />
             <IonRouterOutlet>
               <Route path="/register" component={RegistrationPage} />
-              <PrivateRoute path="/home" component={HomePage} />
+              <PrivateRoute name="home" path="/home" component={HomePage} />
               <PrivateRoute
                 path="/tab1-detail/:id"
                 component={TabOneDetailPage}
