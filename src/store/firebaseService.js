@@ -2,7 +2,12 @@ import * as firebase from "firebase"; // 4.3.0
 require("firebase/firestore");
 
 var firebaseConfig = {
-
+  apiKey: "AIzaSyDQAF6Y3EMj50SIC3LxVVZw7QbImG58i1o",
+  authDomain: "my-mentor-48f94.firebaseapp.com",
+  databaseURL: "https://my-mentor-48f94.firebaseio.com",
+  projectId: "my-mentor-48f94",
+  storageBucket: "my-mentor-48f94.appspot.com",
+  messagingSenderId: "148881402208"
 };
 
 // Ensure that you do not login twice.
