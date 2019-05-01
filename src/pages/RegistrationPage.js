@@ -28,30 +28,31 @@ class RegistrationPage extends Component {
 
   _doCreateAccount = async history => {
     try {
-      let r = await this.props.store.doLogin(
-        this.email.current.value,
-        this.password.current.value
-      );
+      let r = await this.props.store.doCreateUser({
+        email: this.email.current.value,
+        password: this.password.current.value,
+        firstName: this.firstName.current.value,
+        lastName: this.lastName.current.value
+      });
 
       if (r.code) {
-        this.setState(() => ({ showErrorToast: true, errMsg: r.message }));
+        throw r;
       } else {
-        history.push("/");
+        history.push("/home");
       }
     } catch (e) {
-      debugger;
       console.log(e);
+      this.setState(() => ({ showErrorToast: true, errMsg: e.message }));
     }
   };
 
   render() {
-    let { doLogin, isAuth } = this.props.store;
     return (
       <>
         <BasicPage
           title="Create Account Page"
           hasMenu
-          backAction={()=>{}}
+          backAction={() => {}}
           renderContent={history => {
             return (
               <>
@@ -86,7 +87,7 @@ class RegistrationPage extends Component {
                         return;
                       }
                       e.preventDefault();
-                      this._doLogin(history);
+                      this._doCreateAccount(history);
                     }}
                   >
                     Create Account

@@ -15,17 +15,22 @@ if (!firebase.apps.length) {
 // firestore.settings(settings);
 
 /**
- *
+ * so this function is called when the authentication state changes
+ * in the application, a side effect of that is that we need to get
+ * the rest of the user data from the user collection, that is 
+ * done with the _handleAuthedUser callback
  */
-export const authCheck = async () => {
+export const authCheck = async _handleAuthedUser => {
   return new Promise(resolve => {
     // Listen for authentication state to change.
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user != null) {
         console.log("We are authenticated now!");
-        return resolve(user);
+
+        return resolve(await _handleAuthedUser(user));
       } else {
         console.log("We did not authenticate.");
+        _handleAuthedUser(null);
         return resolve(null);
       }
     });
@@ -69,11 +74,14 @@ export const registerUser = userInfo => {
       return firebase
         .firestore()
         .collection("users")
-        .doc(newUser.uid)
+        .doc(newUser.user.uid)
         .set({
           email,
           firstName,
           lastName
+        })
+        .then(() => {
+          return { ...newUser, firstName, lastName };
         });
     });
 };
@@ -180,7 +188,7 @@ export const getByRef = _documentRef => {
     .get()
     .then(doc => {
       if (doc.exists) {
-        return {...doc.data(), id: _documentRef.id};
+        return { ...doc.data(), id: _documentRef.id };
       } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");

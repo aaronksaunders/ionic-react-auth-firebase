@@ -4,7 +4,6 @@ import {
   IonContent,
   IonButton,
   IonLabel,
-  IonText
 } from "@ionic/react";
 // MOBX
 import { inject } from "mobx-react";

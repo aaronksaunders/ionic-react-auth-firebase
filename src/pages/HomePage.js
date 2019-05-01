@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter, Redirect, Route } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import {
   IonPage,
@@ -8,7 +8,6 @@ import {
   IonButtons,
   IonToolbar,
   IonButton,
-  IonLabel
 } from "@ionic/react";
 
 // MOBX
@@ -35,7 +34,7 @@ class HomePage extends Component {
 
   _onLogoutClick = async e => {
     e.preventDefault();
-    let r = await this.props.store.doLogout();
+    await this.props.store.doLogout();
     this.props.history.push("/login");
   };
 
