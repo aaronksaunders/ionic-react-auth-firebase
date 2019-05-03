@@ -79,21 +79,25 @@ class TabOnePage extends Component {
 
   _doRefresh = async event => {
     console.log("Begin async operation");
+    this.setState(() => ({ refreshing: true }));
 
     await this.props.store.loadData();
 
     console.log("Async operation has ended");
-    event.target.complete();
+    //event.target.complete();
+    //this.setState(() => ({ refreshing: false }));
   };
 
   _renderList = () => {
     return (
       <IonContent>
         <IonList>
-          <IonRefresher slot="fixed" onIonRefresh={e => this._doRefresh(e)}>
-            <IonRefresherContent style={{ color: "black" }} />
+          <IonRefresher  onIonRefresh={e => this._doRefresh(e)}>
+            <IonRefresherContent style={{ color: "black" }} refreshingText="Refreshing..." padding/>
           </IonRefresher>
+          <div style={{paddingTop: this.state.refreshing ? 40 : 0}}>
           {this._renderItems()}
+          </div>
         </IonList>
       </IonContent>
     );
