@@ -183,6 +183,34 @@ export const addObjectToCollection = ({ collection, objectData }) => {
     });
 };
 
+
+/**
+ *
+ * @param {*} collection - name of collection 
+ * @param {*} objectId - id of data to remove from the collection
+ */
+export const removeObjectFromCollection = ({ collection, objectId }) => {
+  let currentUserId = firebase.auth().currentUser.uid;
+  let collectionRef = firebase.firestore().collection(collection);
+
+  return collectionRef.doc(objectId).delete()
+    .then(
+      async doc => {
+        console.log(`removeObjectFromCollection ${collection} ${objectId}`);
+        return true;
+      },
+      error => {
+        console.log(`ERROR: removeObjectFromCollection ${collection} ${error}`);
+        return error;
+      }
+    )
+    .catch(e => {
+      console.log(`ERROR: removeObjectFromCollection ${collection} ${e}`);
+      return e;
+    });
+};
+
+
 export const getByRef = _documentRef => {
   return _documentRef
     .get()

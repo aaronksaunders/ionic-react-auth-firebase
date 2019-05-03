@@ -1,5 +1,5 @@
 import { observable, computed, action, decorate, runInAction } from "mobx";
-import { get, set, entries } from "mobx";
+import { get, set, entries, remove } from "mobx";
 import * as firebaseService from "./firebaseService";
 
 export class Store {
@@ -88,7 +88,7 @@ export class Store {
         .loginWithEmail(_username, _password)
         .then(
           _result => {
-            return true
+            return true;
           },
           err => {
             console.log(err);
@@ -183,6 +183,28 @@ export class Store {
         return e;
       });
   }
+
+  deleteItem(_data) {
+    return firebaseService
+      .removeObjectFromCollection({ collection: "items", objectId: _data.id })
+      .then(
+        _result => {
+          // create the user object based on the data retrieved...
+          return runInAction(() => {
+            remove(this.items, _data.id);
+            return true;
+          });
+        },
+        err => {
+          console.log(err);
+          return err;
+        }
+      )
+      .catch(e => {
+        console.log(e);
+        return e;
+      });
+  }
 }
 
 decorate(Store, {
@@ -203,5 +225,7 @@ decorate(Store, {
   doLogin: action,
   doLogout: action,
   loadData: action,
-  itemByKey: action
+  itemByKey: action,
+  addItem: action,
+  deleteItem: action
 });

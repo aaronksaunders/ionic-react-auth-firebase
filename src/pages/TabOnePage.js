@@ -5,7 +5,10 @@ import {
   IonText,
   IonList,
   IonLabel,
-  IonButton
+  IonButton,
+  IonItemSliding,
+  IonItemOption,
+  IonItemOptions
 } from "@ionic/react";
 // MOBX
 import { inject, observer } from "mobx-react";
@@ -21,38 +24,58 @@ class TabOnePage extends Component {
     this.props.store.loadData();
   }
 
+  /**
+   *
+   */
   _renderItems = () => {
     return this.props.store.itemEntries.map(([key, value]) => {
       return (
-        <IonItem
-          key={key}
-          onClick={e => {
-            if (!e.currentTarget) {
-              return;
-            }
-            e.preventDefault();
-            this.props.history.push("/tab1-detail/" + key);
-          }}
-        >
-          <IonLabel text-wrap>
-            <IonText color="primary">
-              <h3>{value.content.subject}</h3>
-            </IonText>
-            <p>{value.content.body}</p>
-            <IonText color="secondary">
-              <p>{value.content.dueDate}</p>
-            </IonText>
-          </IonLabel>
-        </IonItem>
+        <IonItemSliding key={key}>
+          <IonItem
+            onClick={e => {
+              if (!e.currentTarget) {
+                return;
+              }
+              e.preventDefault();
+              this.props.history.push("/tab1-detail/" + key);
+            }}
+          >
+            <IonLabel text-wrap>
+              <IonText color="primary">
+                <h3>{value.content.subject}</h3>
+              </IonText>
+              <p>{value.content.body}</p>
+              <IonText color="secondary">
+                <p>{value.content.dueDate}</p>
+              </IonText>
+            </IonLabel>
+          </IonItem>
+
+          <IonItemOptions side="end">
+            <IonItemOption onClick={(e) => this._delete(e,value)} color="danger">
+              Delete
+            </IonItemOption>
+          </IonItemOptions>
+        </IonItemSliding>
       );
     });
+  };
+
+  _delete = async  (_e, _item) => {
+    let { store } = this.props;
+    // close the item 
+    await _e.target.parentElement.parentElement.closeOpened()
+    let result = await store.deleteItem({ id: _item.id });
+    if (result) {
+      alert("item deleted " + _item.id )
+    }
   };
 
   _addItem = () => {
     this.setState(() => ({ showModal: true }));
   };
   render() {
-    let { store } = this.props; 
+    let { store } = this.props;
 
     if (!store.activeUser) return null;
 
@@ -78,7 +101,7 @@ class TabOnePage extends Component {
           <IonButton expand="full" onClick={e => this._addItem()}>
             Add Item
           </IonButton>
-          <IonList>{this._renderItems()}</IonList>
+          <IonList ref="list">{this._renderItems()}</IonList>
         </IonContent>{" "}
       </>
     );
