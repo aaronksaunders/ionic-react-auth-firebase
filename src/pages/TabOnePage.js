@@ -10,6 +10,8 @@ import {
   IonItemOption,
   IonItemOptions
 } from "@ionic/react";
+import { IonRefresher, IonRefresherContent } from "@ionic/react";
+
 // MOBX
 import { inject, observer } from "mobx-react";
 import AddItemModal from "./AddItemModal";
@@ -52,7 +54,7 @@ class TabOnePage extends Component {
           </IonItem>
 
           <IonItemOptions side="end">
-            <IonItemOption onClick={(e) => this._delete(e,value)} color="danger">
+            <IonItemOption onClick={e => this._delete(e, value)} color="danger">
               Delete
             </IonItemOption>
           </IonItemOptions>
@@ -61,19 +63,42 @@ class TabOnePage extends Component {
     });
   };
 
-  _delete = async  (_e, _item) => {
+  _delete = async (_e, _item) => {
     let { store } = this.props;
-    // close the item 
-    await _e.target.parentElement.parentElement.closeOpened()
+    // close the item
+    await _e.target.parentElement.parentElement.closeOpened();
     let result = await store.deleteItem({ id: _item.id });
     if (result) {
-      alert("item deleted " + _item.id )
+      alert("item deleted " + _item.id);
     }
   };
 
   _addItem = () => {
     this.setState(() => ({ showModal: true }));
   };
+
+  _doRefresh = async event => {
+    console.log("Begin async operation");
+
+    await this.props.store.loadData();
+
+    console.log("Async operation has ended");
+    event.target.complete();
+  };
+
+  _renderList = () => {
+    return (
+      <IonContent>
+        <IonList>
+          <IonRefresher slot="fixed" onIonRefresh={e => this._doRefresh(e)}>
+            <IonRefresherContent style={{ color: "black" }} />
+          </IonRefresher>
+          {this._renderItems()}
+        </IonList>
+      </IonContent>
+    );
+  };
+
   render() {
     let { store } = this.props;
 
@@ -101,7 +126,7 @@ class TabOnePage extends Component {
           <IonButton expand="full" onClick={e => this._addItem()}>
             Add Item
           </IonButton>
-          <IonList ref="list">{this._renderItems()}</IonList>
+          {this._renderList()}
         </IonContent>{" "}
       </>
     );
