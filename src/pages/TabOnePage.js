@@ -19,9 +19,7 @@ import AddItemModal from "./AddItemModal";
 class TabOnePage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showModal: false
-    };
+    this.state = {};
 
     this.props.store.loadData();
   }
@@ -73,10 +71,6 @@ class TabOnePage extends Component {
     }
   };
 
-  _addItem = () => {
-    this.setState(() => ({ showModal: true }));
-  };
-
   _doRefresh = async event => {
     console.log("Begin async operation");
     this.setState(() => ({ refreshing: true }));
@@ -104,20 +98,20 @@ class TabOnePage extends Component {
   };
 
   render() {
-    let { store } = this.props;
+    let { store, showAddItemModal } = this.props;
 
     if (!store.activeUser) return null;
 
     return (
       <>
         <AddItemModal
-          showModal={this.state.showModal}
+          showModal={showAddItemModal}
           onDidDismiss={_v => {
             if (_v) {
               console.log(_v.result);
               store.addItem({ ..._v.result });
             }
-            this.setState(() => ({ showModal: false }));
+            this.props.addItem(false)
           }}
         />
         <IonContent padding>
@@ -127,9 +121,6 @@ class TabOnePage extends Component {
           <IonItem lines="none">
             <IonLabel>Current User: {store.activeUser.email}</IonLabel>
           </IonItem>
-          <IonButton expand="full" onClick={e => this._addItem()}>
-            Add Item
-          </IonButton>
           {this._renderList()}
         </IonContent>{" "}
       </>

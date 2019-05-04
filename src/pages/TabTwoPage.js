@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  IonItem,
-  IonContent,
-  IonButton,
-  IonLabel,
-} from "@ionic/react";
+import { IonItem, IonContent, IonButton, IonLabel } from "@ionic/react";
 // MOBX
 import { inject } from "mobx-react";
 
@@ -14,11 +9,16 @@ class TabTwoPage extends Component {
     this.state = {};
   }
 
+  _onLogoutClick = async e => {
+    e.preventDefault();
+    await this.props.store.doLogout();
+    this.props.history.push("/login");
+  };
+
   render() {
     let user = this.props.store.activeUser;
     return (
       <IonContent padding>
-
         <IonItem>
           <IonLabel position="fixed">Email</IonLabel>
           <IonLabel>{user.email}</IonLabel>
@@ -38,7 +38,14 @@ class TabTwoPage extends Component {
           {user.bio}
         </IonItem>
 
-        <IonButton expand="full">LOGOUT</IonButton>
+        <IonButton
+          expand="full"
+          onClick={e => {
+            this._onLogoutClick(e);
+          }}
+        >
+          LOGOUT
+        </IonButton>
       </IonContent>
     );
   }

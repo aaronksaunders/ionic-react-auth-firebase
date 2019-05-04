@@ -7,7 +7,7 @@ import {
   IonHeader,
   IonButtons,
   IonToolbar,
-  IonButton,
+  IonButton
 } from "@ionic/react";
 
 // MOBX
@@ -18,44 +18,58 @@ import TabContainer from "../components/TabContainer";
 class HomePage extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      onListPage: true
+    };
   }
 
+
   /**
-   * used to navigate to a different route in the application
+   * determine if i need to show the add item modal
    */
-  goToLink = e => {
-    if (!e.currentTarget) {
-      return;
-    }
-    e.preventDefault();
-    this.props.history.push(e.currentTarget.href);
+  _addItem = _value => {
+    debugger;
+    this.setState(() => ({ showAddItemModal: _value }));
   };
 
-  _onLogoutClick = async e => {
-    e.preventDefault();
-    await this.props.store.doLogout();
-    this.props.history.push("/login");
+  /**
+   * determine if the tabs have changed so I can change the buttons 
+   * in the title bar
+   */
+  _changedTabs = e => {
+    if (e.currentTarget.attributes.tab.value === "tab1") {
+      this.setState(() => ({ onListPage: true }));
+    } else {
+      this.setState(() => ({ onListPage: false }));
+    }
   };
 
   render() {
+    let { onListPage } = this.state;
     return (
       <IonPage>
         <IonHeader>
           <IonToolbar color="primary">
-            <IonButtons slot="end">
-              <IonButton
-                onClick={e => {
-                  this._onLogoutClick(e);
-                }}
-              >
-                LOGOUT
-              </IonButton>
-            </IonButtons>
+            {onListPage ? (
+              <IonButtons slot="end">
+                <IonButton
+                  onClick={e => {
+                    this._onLogoutClick(e);
+                  }}
+                >
+                  ADD ITEM
+                </IonButton>
+              </IonButtons>
+            ) : null}
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <TabContainer history={this.props.history} />
+          <TabContainer
+            history={this.props.history}
+            changedTabs={e => this._changedTabs(e)}
+            addItem={this._addItem}
+            showAddItemModal={this.state.showAddItemModal}
+          />
         </IonContent>
       </IonPage>
     );
