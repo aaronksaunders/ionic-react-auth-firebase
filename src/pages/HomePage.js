@@ -54,7 +54,7 @@ class HomePage extends Component {
               <IonButtons slot="end">
                 <IonButton
                   onClick={e => {
-                    this._onLogoutClick(e);
+                    this.setState(() => ({ showAddItemModal: true }));
                   }}
                 >
                   ADD ITEM
