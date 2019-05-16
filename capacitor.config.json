@@ -1,0 +1,7 @@
+{
+  "appId": "com.aks.reactionicfb",
+  "appName": "reactionicfb",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build"
+}

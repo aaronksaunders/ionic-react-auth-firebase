@@ -45,6 +45,35 @@ var firebaseConfig = {
  <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.31.09%20PM.png" height="600" style="padding:10px">
  </div>
   
+
+## Adding Capacitor
+```
+npm install --save @capacitor/cli @capacitor/core
+```
+next you need to build the app
+```
+npm run build
+```
+then edit the `capacitor.config.json` to point to the web directory
+```json
+{
+  "appId": "com.aks.reactionicfb",
+  "appName": "reactionicfb",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build" <=== make this change
+}
+```
+
+Now add `ios` or `android` to the application, on ios please checkout this known issue https://github.com/ionic-team/capacitor/issues/1448
+```
+npx cap add ios
+```
+Update the `index.html` to create the safe area on devices
+```html
+<meta name="viewport" content="initial-scale=1,user-scalable=no, width=device-width, height=device-height, viewport-fit=cover">
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
