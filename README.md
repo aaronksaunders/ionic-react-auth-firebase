@@ -71,8 +71,16 @@ npx cap add ios
 ```
 Update the `index.html` to create the safe area on devices
 ```html
-<meta name="viewport" content="initial-scale=1,user-scalable=no, width=device-width, height=device-height, viewport-fit=cover">
+<meta name="viewport" content="initial-scale=1,user-scalable=no, width=device-width, 
+                               height=device-height, viewport-fit=cover">
 ```
+Then to run on ios device
+```
+npm run build; npx cap sync
+```
+More information available at the capacitor website https://capacitor.ionicframework.com/docs/getting-started/
+
+----
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
