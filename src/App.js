@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect
-} from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
-import { IonApp, IonRouterOutlet, IonSpinner } from "@ionic/react";
+import {
+  IonApp,
+  IonRouterOutlet,
+  IonSpinner,
+  IonReactRouter
+} from "@ionic/react";
 
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
@@ -29,7 +29,7 @@ class App extends Component {
         <IonSpinner name="circles" />
       </div>
     ) : (
-      <Router>
+      <IonReactRouter>
         <IonApp>
           <Switch>
             <Redirect exact from="/" to="home" />
@@ -44,7 +44,7 @@ class App extends Component {
             </IonRouterOutlet>
           </Switch>
         </IonApp>
-      </Router>
+      </IonReactRouter>
     );
   }
 }
