@@ -1,6 +1,6 @@
 ## React Project using Ionic v4 Components
 
->October 2019 - Another sample application using Ionic Framework, Firebase and React, but this one uses react-hooks. This is sample code from the ReactJS Course I taught at [Inclusive Innovation Incubator](www.in3dc.com) as part of our #TheFutureIsWrittenInCode initiative
+>October 2019 - This is a link to another sample application using Ionic Framework, Firebase and React, but this one uses react-hooks. This is sample code from the ReactJS Course I taught at [Inclusive Innovation Incubator](www.in3dc.com) as part of our #TheFutureIsWrittenInCode initiative
 [https://github.com/aaronksaunders/react-course-firebase-hooks-app/tree/capacitor-ionic](https://github.com/aaronksaunders/react-course-firebase-hooks-app/tree/capacitor-ionic)
 ---
 
