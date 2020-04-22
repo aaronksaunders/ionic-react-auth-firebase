@@ -7,6 +7,10 @@
 >[https://github.com/aaronksaunders/react-course-firebase-hooks-app/tree/capacitor-ionic](https://github.com/aaronksaunders/react-course-firebase-hooks-app/tree/capacitor-ionic)
 
 ---
+<p align="center">
+<img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202020-04-22%20at%206.12.57%20PM.png" width="66%" /><h3>Ionic React Video Playlist</h3>
+  </p>
+---
 
 Responding to suggestion from Max Lynch...
 > "If someone wrote a tutorial on using Ionic React with Firebase that would be pretty cool (hint hint)"
@@ -41,17 +45,17 @@ var firebaseConfig = {
 ```
 
 ## Screenshots
-<div>
+<p align="center">
  <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.32.49%20PM.png" height="600" style="padding:10px">
 
  <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.30.39%20PM.png" height="600" style="padding:10px">
- </div>
+ </p>
 
-<div>
+<p align="center">
  <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.30.54%20PM.png" height="600" style="padding:10px">
   
  <img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202019-04-29%20at%2011.31.09%20PM.png" height="600" style="padding:10px">
- </div>
+ </p>
   
 
 ## Adding Capacitor
