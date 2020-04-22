@@ -3,5 +3,6 @@
   "appName": "reactionicfb",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "build"
+  "webDir": "build",
+  "cordova": {}
 }

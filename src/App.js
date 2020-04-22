@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 
-import {
-  IonApp,
-  IonRouterOutlet,
-  IonSpinner,
-  IonReactRouter
-} from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonSpinner } from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
 
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
@@ -23,7 +19,7 @@ class App extends Component {
           position: "absolute",
           left: "50%",
           top: "50%",
-          transform: "translate(-50%, -50%)"
+          transform: "translate(-50%, -50%)",
         }}
       >
         <IonSpinner name="circles" />

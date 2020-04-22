@@ -17,13 +17,13 @@ if (!firebase.apps.length) {
 /**
  * so this function is called when the authentication state changes
  * in the application, a side effect of that is that we need to get
- * the rest of the user data from the user collection, that is 
+ * the rest of the user data from the user collection, that is
  * done with the _handleAuthedUser callback
  */
-export const authCheck = async _handleAuthedUser => {
-  return new Promise(resolve => {
+export const authCheck = async (_handleAuthedUser) => {
+  return new Promise((resolve) => {
     // Listen for authentication state to change.
-    firebase.auth().onAuthStateChanged(async user => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user != null) {
         console.log("We are authenticated now!");
 
@@ -63,12 +63,12 @@ export const logOut = () => {
  * @param {*} userInfo.email
  * @param {*} userInfo.password
  */
-export const registerUser = userInfo => {
+export const registerUser = (userInfo) => {
   console.log("in registerUser");
   return firebase
     .auth()
     .createUserWithEmailAndPassword(userInfo.email, userInfo.password)
-    .then(newUser => {
+    .then((newUser) => {
       let { email, firstName, lastName } = userInfo;
 
       return firebase
@@ -78,10 +78,10 @@ export const registerUser = userInfo => {
         .set({
           email,
           firstName,
-          lastName
+          lastName,
         })
         .then(() => {
-          return { ...newUser, firstName, lastName };
+          return { ...newUser.user, firstName, lastName };
         });
     });
 };
@@ -93,19 +93,16 @@ export const getUserProfile = () => {
   let user = firebase.auth().currentUser;
   console.log(user);
 
-  var userRef = firebase
-    .firestore()
-    .collection("users")
-    .doc(user.uid);
+  var userRef = firebase.firestore().collection("users").doc(user.uid);
 
   return userRef
     .get()
-    .then(doc => {
+    .then((doc) => {
       if (doc.exists) {
         console.log("Document data:", doc.data());
         return {
           ...doc.data(),
-          id: user.uid
+          id: user.uid,
         };
       } else {
         // doc.data() will be undefined in this case
@@ -113,7 +110,7 @@ export const getUserProfile = () => {
         return null;
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.log("Error getting document:", error);
     });
 };
@@ -132,17 +129,17 @@ export const queryObjectCollection = ({ collection }) => {
     collectionRef
       //.where('owner', '==', currentUserId)
       .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           results.push({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           });
         });
         return results;
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Error getting documents: ", error);
         return error;
       })
@@ -163,58 +160,58 @@ export const addObjectToCollection = ({ collection, objectData }) => {
       owner: currentUserId,
       content: { ...objectData },
       created: new Date().getTime(),
-      updated: new Date().getTime()
+      updated: new Date().getTime(),
     })
     .then(
-      async doc => {
+      async (doc) => {
         console.log(`addObjectToCollection ${collection} ${doc}`);
 
         let docData = await getByRef(doc);
         return docData;
       },
-      error => {
+      (error) => {
         console.log(`ERROR: addObjectToCollection ${collection} ${error}`);
         return error;
       }
     )
-    .catch(e => {
+    .catch((e) => {
       console.log(`ERROR: addObjectToCollection ${collection} ${e}`);
       return e;
     });
 };
 
-
 /**
  *
- * @param {*} collection - name of collection 
+ * @param {*} collection - name of collection
  * @param {*} objectId - id of data to remove from the collection
  */
 export const removeObjectFromCollection = ({ collection, objectId }) => {
   let currentUserId = firebase.auth().currentUser.uid;
   let collectionRef = firebase.firestore().collection(collection);
 
-  return collectionRef.doc(objectId).delete()
+  return collectionRef
+    .doc(objectId)
+    .delete()
     .then(
-      async doc => {
+      async (doc) => {
         console.log(`removeObjectFromCollection ${collection} ${objectId}`);
         return true;
       },
-      error => {
+      (error) => {
         console.log(`ERROR: removeObjectFromCollection ${collection} ${error}`);
         return error;
       }
     )
-    .catch(e => {
+    .catch((e) => {
       console.log(`ERROR: removeObjectFromCollection ${collection} ${e}`);
       return e;
     });
 };
 
-
-export const getByRef = _documentRef => {
+export const getByRef = (_documentRef) => {
   return _documentRef
     .get()
-    .then(doc => {
+    .then((doc) => {
       if (doc.exists) {
         return { ...doc.data(), id: _documentRef.id };
       } else {
@@ -223,7 +220,7 @@ export const getByRef = _documentRef => {
         return null;
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.log("Error getting document:", error);
       return error;
     });
@@ -233,7 +230,7 @@ export const getByRef = _documentRef => {
  *
  * @param {*} blob
  */
-export const uploadImage = blob => {
+export const uploadImage = (blob) => {
   return new Promise((resolve, reject) => {
     let currentUserId = firebase.auth().currentUser.uid;
     const ref = firebase
@@ -245,18 +242,18 @@ export const uploadImage = blob => {
 
     task.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
-      snapshot =>
+      (snapshot) =>
         console.log((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
-      error => {
+      (error) => {
         console.log("error", error);
         return reject(error);
       },
-      result => {
+      (result) => {
         return resolve({
           url: task.snapshot.downloadURL,
           contentType: task.snapshot.metadata.contentType,
           name: task.snapshot.metadata.name,
-          size: task.snapshot.metadata.size
+          size: task.snapshot.metadata.size,
         });
       }
     );

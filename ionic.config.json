@@ -1,0 +1,8 @@
+{
+    "name": "reactionicfb",
+    "integrations": {
+      "capacitor": {}
+    },
+    "type": "react"
+  }
+  
