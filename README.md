@@ -8,7 +8,10 @@
 
 ---
 <p align="center">
-<img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202020-04-22%20at%206.12.57%20PM.png" width="66%" /><h3>Ionic React Video Playlist</h3>
+<img src="https://raw.githubusercontent.com/aaronksaunders/ionic-react-auth-firebase/master/screenshots/Screen%20Shot%202020-04-22%20at%206.12.57%20PM.png" width="66%" />
+  </p>
+  <p align="center">
+  <strong><a href="https://www.youtube.com/playlist?list=PL2PY2-9rsgl3OHIMYb1AzVG5wADUxOmUW">Click To View Ionic React Video Playlist</a></strong>
   </p>
 ---
 
