@@ -1,5 +1,10 @@
 ## React Project using Ionic v5 Components - Updated April 2020
 
+
+> See YouTube Video with Updated Content
+- https://www.youtube.com/playlist?list=PL2PY2-9rsgl3aYbgV5Y_jFkCH7WWsiP-f
+
+
 >April 2020 - Updated to latest versions of ionic/react, mobx and capacitor
 
 >October 2019 - This is a link to another sample application using Ionic Framework, Firebase and React, but this one uses react-hooks. This is sample code from the ReactJS Course I taught at [Inclusive Innovation Incubator](www.in3dc.com) as part of our #TheFutureIsWrittenInCode initiative
