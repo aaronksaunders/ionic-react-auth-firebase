@@ -4,6 +4,7 @@
 > See YouTube Video with Updated Content
 - https://www.youtube.com/playlist?list=PL2PY2-9rsgl3aYbgV5Y_jFkCH7WWsiP-f
 
+>August 2020 - Updated to latest versions of ionic/react, mobx and capacitor, refactored login process to be "clearer" using mobx hooks instead of inject
 
 >April 2020 - Updated to latest versions of ionic/react, mobx and capacitor
 
