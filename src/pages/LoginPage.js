@@ -1,128 +1,116 @@
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
 import {
+  IonButtons,
+  IonButton,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
   IonItem,
   IonLabel,
-  IonButton,
   IonInput,
   IonToast,
-  IonText
+  IonText,
+  IonPage,
+  IonContent,
 } from "@ionic/react";
-import BasicPage from "../components/BasicPage";
+import { useHistory } from "react-router";
 
-import { inject, observer } from "mobx-react";
-/**
- * sets the `title` and property hasMenu = true so that the menu for the side
- * drawer is displayed
- *
- * sets the `renderContent` propety to render the contents of the page
- */
-//const LoginPage = ({ isAuth, doLogin }) => {
+import { observer, MobXProviderContext } from "mobx-react";
 
-class LoginPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showErrorToast: false,
-      errMsg: true
-    };
-
-    // see - https://reactjs.org/docs/uncontrolled-components.html
-    this.email = React.createRef();
-    this.password = React.createRef();
-  }
-
-  componentDidMount() {}
+const LoginPage = () => {
+  const { store } = React.useContext(MobXProviderContext);
+  let { isAuth, initializationError } = store;
+  const history = useHistory();
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("");
+  const [errorInfo, setErrorInfo] = useState({});
 
   /**
    *
    */
-  _doLogin = async history => {
+  const _doLogin = async () => {
     try {
-      let r = await this.props.store.doLogin(
-        this.email.current.value,
-        this.password.current.value
-      );
-
+      let r = await store.doLogin(email, password);
       if (r.code) {
         throw r;
-      } 
+      }
+      setErrorInfo({});
+      return history.push("/tabs/home");
     } catch (e) {
-      this.setState(() => ({ showErrorToast: true, errMsg: e.message }));
+      setErrorInfo({ showErrorToast: true, errMsg: e.message });
+      return false;
     }
   };
 
-  render() {
-    let { isAuth, initializationError, activeUser } = this.props.store;
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar color="light">
+          <IonButtons slot="start" />
+          <IonTitle>Login</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonText color="danger" padding style={{ fontWeight: "500" }}>
+          {initializationError && initializationError.message}
+        </IonText>
 
-    if (activeUser) {
-      return <Redirect to="/home" />;
-    } else {
-      return (
-        <>
-          <IonText color="danger" padding style={{ fontWeight: "500" }}>
-            {initializationError && initializationError.message}
-          </IonText>
-          <BasicPage
-            title="Login Page"
-            hasMenu
-            renderContent={history => {
-              return (
-                <>
-                  <IonItem>
-                    <IonLabel position="floating">Email Address</IonLabel>
-                    <IonInput type="email" ref={this.email} name="email" />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="floating">Password</IonLabel>
-                    <IonInput
-                      type="password"
-                      ref={this.password}
-                      name="password"
-                    />
-                  </IonItem>
-                  <div style={{ padding: 10, paddingTop: 20 }}>
-                    <IonButton
-                      expand="full"
-                      style={{ margin: 14 }}
-                      onClick={e => {
-                        if (!e.currentTarget) {
-                          return;
-                        }
-                        e.preventDefault();
-                        this._doLogin(history);
-                      }}
-                    >
-                      {isAuth ? "Logged In" : "Login"}
-                    </IonButton>
-                    <IonButton
-                      expand="full"
-                      style={{ margin: 14 }}
-                      onClick={e => {
-                        e.preventDefault();
-                        history.push("/register");
-                      }}
-                    >
-                      Create Account
-                    </IonButton>
-                  </div>
-                </>
-              );
+        <IonItem>
+          <IonLabel position="floating">Email Address</IonLabel>
+          <IonInput
+            type="email"
+            onIonChange={(e) => {
+              setEmail(e.detail.value);
             }}
+            name="email"
+            value="test@test.com"
           />
-          <IonToast
-            color="danger"
-            isOpen={this.state.showErrorToast}
-            onDidDismiss={() =>
-              this.setState(() => ({ showErrorToast: false }))
-            }
-            message={this.state.errMsg}
-            duration={2000}
+        </IonItem>
+        <IonItem>
+          <IonLabel position="floating">Password</IonLabel>
+          <IonInput
+            type="password"
+            onIonChange={(e) => {
+              setPassword(e.detail.value);
+            }}
+            name="password"
           />
-        </>
-      );
-    }
-  }
-}
+        </IonItem>
+        <div style={{ padding: 10, paddingTop: 20 }}>
+          <IonButton
+            expand="full"
+            style={{ margin: 14 }}
+            onClick={(e) => {
+              if (!e.currentTarget) {
+                return;
+              }
+              e.preventDefault();
+              _doLogin(history);
+            }}
+          >
+            {isAuth ? "Logged In" : "Login"}
+          </IonButton>
+          <IonButton
+            expand="full"
+            style={{ margin: 14 }}
+            onClick={(e) => {
+              e.preventDefault();
+              history.push("/register");
+            }}
+          >
+            Create Account
+          </IonButton>
+        </div>
+        <IonToast
+          color="danger"
+          isOpen={errorInfo.showErrorToast}
+          onDidDismiss={() => setErrorInfo({ showErrorToast: false })}
+          message={errorInfo.errMsg}
+          duration={2000}
+        />
+      </IonContent>
+    </IonPage>
+  );
+};
 
-export default inject("store")(observer(LoginPage));
+export default observer(LoginPage);

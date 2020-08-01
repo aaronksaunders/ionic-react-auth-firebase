@@ -20,8 +20,6 @@
     "ionicons": "^5.0.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.2",
-    "overmind": "^23.0.1",
-    "overmind-react": "^24.0.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hook-form": "^5.5.0",

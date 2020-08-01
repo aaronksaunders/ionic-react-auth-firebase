@@ -1,48 +1,62 @@
-import React, { Component } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, Redirect } from "react-router-dom";
 
-import { IonApp, IonRouterOutlet, IonSpinner } from "@ionic/react";
+import { IonApp, IonSpinner, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
-import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
-import TabOneDetailPage from "./pages/TabOneDetailPage";
 
-import { inject, observer } from "mobx-react";
-class App extends Component {
-  render() {
-    return !this.props.store.authCheckComplete ? (
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <IonSpinner name="circles" />
-      </div>
-    ) : (
-      <IonReactRouter>
-        <IonApp>
-          <Switch>
-            <Redirect exact from="/" to="home" />
-            <Route path="/login" component={LoginPage} />
-            <IonRouterOutlet>
-              <Route path="/register" component={RegistrationPage} />
-              <PrivateRoute name="home" path="/home" component={HomePage} />
-              <PrivateRoute
-                path="/tab1-detail/:id"
-                component={TabOneDetailPage}
-              />
-            </IonRouterOutlet>
-          </Switch>
-        </IonApp>
-      </IonReactRouter>
-    );
-  }
-}
+import { observer, MobXProviderContext } from "mobx-react";
+import { autorun } from "mobx";
 
-export default inject("store")(observer(App));
+const PrivateRoutes = () => {
+  return (
+    <IonReactRouter>
+      <IonRouterOutlet>
+        {/****** AUTH CREATE ACCOUNT */}
+        <Route path="/login" component={LoginPage} exact={true} />
+        <Route path="/register" component={RegistrationPage} exact={true} />
+        <Route path="/" render={() => <Redirect to="/login" />} />
+      </IonRouterOutlet>
+    </IonReactRouter>
+  );
+};
+const PublicRoutes = () => {
+  return (
+    <IonReactRouter>
+      <Route path="/tabs" component={HomePage} />
+      <Route path="/" render={() => <Redirect to="/tabs/home" />} />
+    </IonReactRouter>
+  );
+};
+
+const App = () => {
+  const { store } = React.useContext(MobXProviderContext);
+  const [hasUser, setHasUser] = useState(false);
+  useEffect(() => {
+    autorun(() => {
+      setHasUser(store.authenticatedUser !== null);
+    });
+  }, [store.authenticatedUser]);
+
+  console.log(hasUser);
+
+  return !store.authCheckComplete ? (
+    <div
+      style={{
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <IonSpinner name="circles" />
+    </div>
+  ) : (
+    <IonApp>{hasUser ? <PublicRoutes /> : <PrivateRoutes />}</IonApp>
+  );
+};
+
+export default observer(App);

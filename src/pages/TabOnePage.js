@@ -1,43 +1,43 @@
-import React, { Component } from "react";
+import React, {  useState } from "react";
+import { useHistory } from "react-router";
 import {
   IonItem,
   IonContent,
   IonText,
   IonList,
+  IonPage,
+  IonHeader,
+  IonToolbar,
   IonLabel,
-  IonButton,
   IonItemSliding,
   IonItemOption,
-  IonItemOptions
+  IonItemOptions,
+  IonButtons,
+  IonButton,
 } from "@ionic/react";
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
 
 // MOBX
-import { inject, observer } from "mobx-react";
-import AddItemModal from "./AddItemModal";
+import { MobXProviderContext, observer } from "mobx-react";
+import AddItemModal from "./AddItemModal2";
 
-class TabOnePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
+const TabOnePage = ({ addItem }) => {
+  const history = useHistory();
+  const [refreshing, setRefreshing] = useState(false);
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
 
-    this.props.store.loadData();
-  }
+  const {store} = React.useContext(MobXProviderContext)
 
   /**
    *
    */
-  _renderItems = () => {
-    return this.props.store.itemEntries.map(([key, value]) => {
+  const _renderItems = () => {
+    return store.itemEntries.map(([key, value]) => {
       return (
         <IonItemSliding key={key}>
           <IonItem
-            onClick={e => {
-              if (!e.currentTarget) {
-                return;
-              }
-              e.preventDefault();
-              this.props.history.push("/tab1-detail/" + key);
+            onClick={(e) => {
+              history.push("/tabs/tab1-detail/" + key);
             }}
           >
             <IonLabel text-wrap>
@@ -52,7 +52,7 @@ class TabOnePage extends Component {
           </IonItem>
 
           <IonItemOptions side="end">
-            <IonItemOption onClick={e => this._delete(e, value)} color="danger">
+            <IonItemOption onClick={(e) => _delete(e, value)} color="danger">
               Delete
             </IonItemOption>
           </IonItemOptions>
@@ -61,8 +61,7 @@ class TabOnePage extends Component {
     });
   };
 
-  _delete = async (_e, _item) => {
-    let { store } = this.props;
+  const _delete = async (_e, _item) => {
     // close the item
     await _e.target.parentElement.parentElement.closeOpened();
     let result = await store.deleteItem({ id: _item.id });
@@ -71,61 +70,68 @@ class TabOnePage extends Component {
     }
   };
 
-  _doRefresh = async event => {
+  const _doRefresh = async (event) => {
     console.log("Begin async operation");
-    this.setState(() => ({ refreshing: true }));
-
-    await this.props.store.loadData();
-
+    setRefreshing(true);
+    await store.loadData();
+    setRefreshing(false);
     console.log("Async operation has ended");
-    //event.target.complete();
-    //this.setState(() => ({ refreshing: false }));
   };
 
-  _renderList = () => {
+  const _renderList = () => {
     return (
-      <IonContent>
-        <IonList>
-          <IonRefresher  onIonRefresh={e => this._doRefresh(e)}>
-            <IonRefresherContent style={{ color: "black" }} refreshingText="Refreshing..." padding/>
-          </IonRefresher>
-          <div style={{paddingTop: this.state.refreshing ? 40 : 0}}>
-          {this._renderItems()}
-          </div>
-        </IonList>
-      </IonContent>
+      <IonList>
+        <IonRefresher onIonRefresh={(e) => _doRefresh(e)}>
+          <IonRefresherContent
+            style={{ color: "black" }}
+            refreshingText="Refreshing..."
+            padding
+          />
+        </IonRefresher>
+        <div style={{ paddingTop: refreshing ? 40 : 0 }}>{_renderItems()}</div>
+      </IonList>
     );
   };
 
-  render() {
-    let { store, showAddItemModal } = this.props;
+  if (!store.activeUser) return null;
 
-    if (!store.activeUser) return null;
-
-    return (
-      <>
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar color="primary">
+          <IonButtons slot="end">
+            <IonButton
+              onClick={(e) => {
+                setShowAddItemModal(true);
+              }}
+            >
+              ADD ITEM
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent padding>
         <AddItemModal
           showModal={showAddItemModal}
-          onDidDismiss={_v => {
+          onDidDismiss={(_v) => {
             if (_v) {
               console.log(_v.result);
               store.addItem({ ..._v.result });
             }
-            this.props.addItem(false)
+            setShowAddItemModal(false);
           }}
         />
-        <IonContent padding>
-          <IonItem lines="none">
-            <h1>Tab One Page</h1>
-          </IonItem>
-          <IonItem lines="none">
-            <IonLabel>Current User: {store.activeUser.email}</IonLabel>
-          </IonItem>
-          {this._renderList()}
-        </IonContent>{" "}
-      </>
-    );
-  }
-}
 
-export default inject("store")(observer(TabOnePage));
+        <IonItem lines="none">
+          <h1>Tab One Page</h1>
+        </IonItem>
+        <IonItem lines="none">
+          <IonLabel>Current User: {store.activeUser.email}</IonLabel>
+        </IonItem>
+        {_renderList()}
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default observer(TabOnePage);

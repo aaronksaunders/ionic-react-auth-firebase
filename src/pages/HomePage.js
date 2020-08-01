@@ -1,79 +1,50 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { Route, Redirect } from "react-router";
+import React from "react";
+
+import TabOnePage from "../pages/TabOnePage";
+import TabTwoPage from "../pages/TabTwoPage";
 
 import {
-  IonPage,
-  IonContent,
-  IonHeader,
-  IonButtons,
-  IonToolbar,
-  IonButton
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonLabel,
+  IonRouterOutlet,
 } from "@ionic/react";
 
 // MOBX
-import { inject, observer } from "mobx-react";
-import TabContainer from "../components/TabContainer";
-// import CatalogHeader from "../components/CatalogHeader";
+import { observer } from "mobx-react";
+import TabOneDetailPage from "./TabOneDetailPage";
 
-class HomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      onListPage: true
-    };
-  }
+const HomePage = () => {
+  return (
+    <IonTabs>
+      <IonRouterOutlet>
+        <Route path="/tabs/home" exact={true}>
+          <TabOnePage />
+        </Route>
 
+        <Route path="/tabs/tab1-detail/:id" exact={true}>
+          <TabOneDetailPage />
+        </Route>
 
-  /**
-   * determine if i need to show the add item modal
-   */
-  _addItem = _value => {
-    debugger;
-    this.setState(() => ({ showAddItemModal: _value }));
-  };
+        <Route path="/tabs/settings" exact={true}>
+          <TabTwoPage />
+        </Route>
+        <Route path="/tabs" render={() => <Redirect to="/tabs/home" />} />
+      </IonRouterOutlet>
 
-  /**
-   * determine if the tabs have changed so I can change the buttons 
-   * in the title bar
-   */
-  _changedTabs = e => {
-    if (e.currentTarget.attributes.tab.value === "tab1") {
-      this.setState(() => ({ onListPage: true }));
-    } else {
-      this.setState(() => ({ onListPage: false }));
-    }
-  };
+      <IonTabBar slot="bottom">
+        <IonTabButton tab="tab1" href="/tabs/home">
+          <IonLabel>Home</IonLabel>
+        </IonTabButton>
 
-  render() {
-    let { onListPage } = this.state;
-    return (
-      <IonPage>
-        <IonHeader>
-          <IonToolbar color="primary">
-            {onListPage ? (
-              <IonButtons slot="end">
-                <IonButton
-                  onClick={e => {
-                    this.setState(() => ({ showAddItemModal: true }));
-                  }}
-                >
-                  ADD ITEM
-                </IonButton>
-              </IonButtons>
-            ) : null}
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <TabContainer
-            history={this.props.history}
-            changedTabs={e => this._changedTabs(e)}
-            addItem={this._addItem}
-            showAddItemModal={this.state.showAddItemModal}
-          />
-        </IonContent>
-      </IonPage>
-    );
-  }
-}
+        <IonTabButton tab="tab2" href="/tabs/settings">
+          <IonLabel>Settings</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    </IonTabs>
+  );
+};
 
-export default withRouter(inject("store")(observer(HomePage)));
+export default observer(HomePage);

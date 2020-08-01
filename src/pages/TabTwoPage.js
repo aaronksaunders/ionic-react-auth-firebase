@@ -1,24 +1,34 @@
-import React, { Component } from "react";
-import { IonItem, IonContent, IonButton, IonLabel } from "@ionic/react";
+import React from "react";
+import { useHistory } from "react-router";
+import {
+  IonItem,
+  IonContent,
+  IonPage,
+  IonLabel,
+  IonButton,
+  IonHeader,
+  IonToolbar,
+} from "@ionic/react";
 // MOBX
-import { inject } from "mobx-react";
+import { MobXProviderContext } from "mobx-react";
 
-class TabTwoPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const TabTwoPage = () => {
+  const history = useHistory();
+  const { store } = React.useContext(MobXProviderContext);
 
-  _onLogoutClick = async e => {
+  const _onLogoutClick = async (e) => {
     e.preventDefault();
-    await this.props.store.doLogout();
-    this.props.history.push("/login");
+    await store.doLogout();
+    return history.replace("/login");
   };
 
-  render() {
-    let user = this.props.store.activeUser;
-    return (
-      <IonContent padding>
+  let user = store.activeUser;
+  return user ? (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar color="primary"></IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
         <IonItem>
           <IonLabel position="fixed">Email</IonLabel>
           <IonLabel>{user.email}</IonLabel>
@@ -40,15 +50,15 @@ class TabTwoPage extends Component {
 
         <IonButton
           expand="full"
-          onClick={e => {
-            this._onLogoutClick(e);
+          onClick={(e) => {
+            _onLogoutClick(e);
           }}
         >
           LOGOUT
         </IonButton>
       </IonContent>
-    );
-  }
-}
+    </IonPage>
+  ) : null;
+};
 
-export default inject("store")(TabTwoPage);
+export default TabTwoPage;

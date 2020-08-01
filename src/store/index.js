@@ -10,7 +10,7 @@ export class Store {
     this.items = new Map();
     this.initializationError = null;
 
-    this.initializeStore().then(u => {
+    this.initializeStore().then((u) => {
       this.activeUser = u;
       this.authCheckComplete = true;
     });
@@ -22,11 +22,13 @@ export class Store {
    * user
    * @param {*} _authUser
    */
-  handleAuthedUser = async _authUser => {
+  handleAuthedUser = async (_authUser) => {
     if (_authUser) {
       let userAcctInfo = await firebaseService.getUserProfile();
       console.log("setting active user");
       this.activeUser = { ..._authUser, ...userAcctInfo };
+
+      await this.loadData();
     } else {
       this.activeUser = _authUser;
     }
@@ -39,10 +41,10 @@ export class Store {
   async initializeStore() {
     return firebaseService
       .authCheck(this.handleAuthedUser)
-      .then(_user => {
+      .then((_user) => {
         return _user;
       })
-      .catch(e => {
+      .catch((e) => {
         return runInAction(() => {
           this.initializationError = e;
         });
@@ -82,20 +84,18 @@ export class Store {
    * login using a username and password
    */
   doLogin(_username, _password) {
-    debugger;
     if (_username.length) {
       return firebaseService
         .loginWithEmail(_username, _password)
-        .then(
-          _result => {
-            return true;
+        .then( async (_result) => {
+            return _result;
           },
-          err => {
+          (err) => {
             console.log(err);
             return err;
           }
         )
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
           return e;
         });
@@ -111,7 +111,7 @@ export class Store {
         email: _params.email,
         password: _params.password,
         firstName: _params.firstName,
-        lastName: _params.lastName
+        lastName: _params.lastName,
       });
       return newUser;
     } catch (err) {
@@ -141,7 +141,7 @@ export class Store {
     return firebaseService
       .queryObjectCollection({ collection: "items" })
       .then(
-        _result => {
+        (_result) => {
           // create the user object based on the data retrieved...
           return runInAction(() => {
             let resultMap = _result.reduce((map, obj) => {
@@ -152,12 +152,12 @@ export class Store {
             return resultMap;
           });
         },
-        err => {
+        (err) => {
           console.log(err);
           return err;
         }
       )
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         return e;
       });
@@ -166,19 +166,19 @@ export class Store {
     return firebaseService
       .addObjectToCollection({ collection: "items", objectData: _data })
       .then(
-        _result => {
+        (_result) => {
           // create the user object based on the data retrieved...
           return runInAction(() => {
             set(this.items, _result.id, _result);
             return _result;
           });
         },
-        err => {
+        (err) => {
           console.log(err);
           return err;
         }
       )
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         return e;
       });
@@ -188,19 +188,19 @@ export class Store {
     return firebaseService
       .removeObjectFromCollection({ collection: "items", objectId: _data.id })
       .then(
-        _result => {
+        (_result) => {
           // create the user object based on the data retrieved...
           return runInAction(() => {
             remove(this.items, _data.id);
             return true;
           });
         },
-        err => {
+        (err) => {
           console.log(err);
           return err;
         }
       )
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         return e;
       });
@@ -227,5 +227,5 @@ decorate(Store, {
   loadData: action,
   itemByKey: action,
   addItem: action,
-  deleteItem: action
+  deleteItem: action,
 });
