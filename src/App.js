@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-import { IonApp, IonSpinner, IonRouterOutlet } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonLoading } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
 import HomePage from "./pages/HomePage";
@@ -9,7 +9,6 @@ import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
 
 import { observer, MobXProviderContext } from "mobx-react";
-import { autorun } from "mobx";
 
 const PrivateRoutes = () => {
   return (
@@ -34,28 +33,13 @@ const PublicRoutes = () => {
 
 const App = () => {
   const { store } = React.useContext(MobXProviderContext);
-  const [hasUser, setHasUser] = useState(false);
-  useEffect(() => {
-    autorun(() => {
-      setHasUser(store.authenticatedUser !== null);
-    });
-  }, [store.authenticatedUser]);
-
-  console.log(hasUser);
 
   return !store.authCheckComplete ? (
-    <div
-      style={{
-        position: "absolute",
-        left: "50%",
-        top: "50%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      <IonSpinner name="circles" />
-    </div>
+    <IonApp>
+      <IonLoading message="Starting App..." />
+    </IonApp>
   ) : (
-    <IonApp>{hasUser ? <PublicRoutes /> : <PrivateRoutes />}</IonApp>
+    <IonApp>{store.authenticatedUser ? <PublicRoutes /> : <PrivateRoutes />}</IonApp>
   );
 };
 
