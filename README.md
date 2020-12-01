@@ -1,3 +1,4 @@
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W31U7HM)
 ## React Project using Ionic v5 Components - Updated April 2020
 
 
